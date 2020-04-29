@@ -25,22 +25,18 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 });
 exports.sequelize = sequelize;
 
+// models
 const User = require('./models/User').User;
 User.sync({ force: true });
 
-passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (_req, username, password, done) => {
+app.post('/register', (req, res) => {
+	const username = req.body.username;
+	const password = req.body.password;
 	User.findOne({ where: { username } }).then(user => {
-		if (user) { return done(null, false); }
-		else {
-			User.create({ username, password });
-		}
+		if (user) return res.status(400).send();
+		User.create({ username, password });
+		res.status(200).send();
 	});
-}));
-
-app.post('/register', passport.authenticate('signup', {
-	successRedirect: '/',
-	failureRedirect: '/',
-	failureFlash: true
-}));
+});
 
 app.listen(process.env.PORT);
