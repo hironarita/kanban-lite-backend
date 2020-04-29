@@ -10,14 +10,16 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 	port: process.env.POSTGRES_PORT
 });
 
+exports.sequelize = sequelize;
+
 sequelize
 	.authenticate()
-	.then(() => {
-		console.log('Connection has been established successfully.');
-	})
-	.catch(err => {
-		console.error('Unable to connect to the database:', err);
-	});
+	.then(() => console.log('Connection has been established successfully.'))
+	.catch(err => console.error('Unable to connect to the database:', err));
+
+const User = require('./models/User').User;
+
+User.sync();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
