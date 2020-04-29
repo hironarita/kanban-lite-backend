@@ -19,6 +19,8 @@ app.use(session({
 	resave: false,
 	saveUninitialized: false
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 exports.app = app;
 
@@ -50,7 +52,7 @@ app.post('/register', (req, res) => {
 	});
 });
 
-passport.use(new LocalStrategy((username, password, done) => {
+passport.use('login', new LocalStrategy((username, password, done) => {
 	User.findOne({ where: { username } }).then(user => {
 		if (!user) {
 			return done(null, false, { message: 'Incorrect username.' });
@@ -62,12 +64,20 @@ passport.use(new LocalStrategy((username, password, done) => {
 	})
 }));
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.post('/login',
-	passport.authenticate('local'),
-	(req, res) => req.user ? res.status(200).send() : res.status(400).send()
+	passport.authenticate('login'),
+	(req, res) => {
+		req.user ? res.status(200).send() : res.status(400).send() 
+	}
 );
+
+const isLoggedIn = function (req, res, next) {
+	console.log(req.isAuthenticated());
+	if (req.isAuthenticated()) {
+		return next();
+	}
+};
+
+app.get('/isLoggedIn', isLoggedIn, (req, res) => res.send(req.user));
 
 app.listen(process.env.PORT);
