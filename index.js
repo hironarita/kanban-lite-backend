@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 const Sequelize = require('sequelize');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW, {
 	host: 'localhost',
@@ -17,6 +19,14 @@ sequelize
 		console.error('Unable to connect to the database:', err);
 	});
 
-app.get('/', (req, res) => res.send('Hello World!'));
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+app.use(cors());
+
+app.post('/register', (req, res) => console.log(req.body));
 
 app.listen(process.env.PORT);
