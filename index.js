@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -13,8 +14,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(session({
+	secret: "cats",
+	resave: false,
+	saveUninitialized: false
+}));
 
 exports.app = app;
 
@@ -27,16 +31,43 @@ exports.sequelize = sequelize;
 
 // models
 const User = require('./models/User').User;
-User.sync({ force: true });
+User.sync();
+
+passport.serializeUser((user, done) => {
+	done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+	User.findOne({ where: { id } }).then(user => done(null, user));
+});
 
 app.post('/register', (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
-	User.findOne({ where: { username } }).then(user => {
+	User.findOne({ where: { username } }).then(async user => {
 		if (user) return res.status(400).send();
-		User.create({ username, password });
+		await User.create({ username, password });
 		res.status(200).send();
 	});
 });
+
+passport.use(new LocalStrategy((username, password, done) => {
+	User.findOne({ where: { username } }).then(user => {
+		if (!user) {
+			return done(null, false, { message: 'Incorrect username.' });
+		}
+		if (user.password !== password) {
+			return done(null, false, { message: 'Incorrect password.' });
+		}
+		return done(null, user);
+	})
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post('/login',
+	passport.authenticate('local'),
+	(req, res) => req.user ? res.status(200).send() : res.status(400).send()
+);
 
 app.listen(process.env.PORT);
