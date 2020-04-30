@@ -52,8 +52,8 @@ app.post('/register', (req, res) => {
 	const password = req.body.password;
 	User.findOne({ where: { username } }).then(async user => {
 		if (user) return res.status(400).send();
-		await User.create({ username, password });
-		res.status(200).send();
+		const newUser = await User.create({ username, password });
+		req.login(newUser, () => res.status(200).send());
 	});
 });
 
@@ -76,12 +76,13 @@ app.post('/login',
 	}
 );
 
-const isLoggedIn = function (req, res, next) {
+const isLoggedIn = function (req, res) {
 	if (req.isAuthenticated()) {
-		return next();
+		return res.send(true);
 	}
+	res.send(false);
 };
 
-app.get('/isLoggedIn', isLoggedIn, (req, res) => res.send(req.user));
+app.get('/isLoggedIn', isLoggedIn);
 
 app.listen(process.env.SERVER_PORT);
