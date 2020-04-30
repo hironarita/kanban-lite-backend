@@ -7,13 +7,18 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 
-// parse application/x-www-form-urlencoded
+app.use(cors({
+	credentials: true,
+	origin: process.env.CLIENT_URL
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// parse application/json
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});  
 
-app.use(cors());
 app.use(session({
 	secret: "cats",
 	resave: false,
@@ -67,12 +72,11 @@ passport.use('login', new LocalStrategy((username, password, done) => {
 app.post('/login',
 	passport.authenticate('login'),
 	(req, res) => {
-		req.user ? res.status(200).send() : res.status(400).send() 
+		req.user ? res.status(200).send() : res.status(400).send()
 	}
 );
 
 const isLoggedIn = function (req, res, next) {
-	console.log(req.isAuthenticated());
 	if (req.isAuthenticated()) {
 		return next();
 	}
@@ -80,4 +84,4 @@ const isLoggedIn = function (req, res, next) {
 
 app.get('/isLoggedIn', isLoggedIn, (req, res) => res.send(req.user));
 
-app.listen(process.env.PORT);
+app.listen(process.env.SERVER_PORT);
