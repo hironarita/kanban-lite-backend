@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
 const session = require('express-session');
-require('./utilities/passport');
 
 app.use(cors({
 	credentials: true,
@@ -39,6 +38,9 @@ exports.sequelize = sequelize;
 // models
 const User = require('./models/user');
 User.sync();
+
+// must come after User model is initialized
+require('./utilities/passport');
 
 // routes
 app.use('/account', require('./routes/account'));

@@ -18,11 +18,11 @@ router.post('/login',
 	}
 );
 
-const isLoggedIn = function (req, res) {
-    req.isAuthenticated() === true
-        ? res.send(true)
-        : res.send(false);
-};
-router.get('/isLoggedIn', isLoggedIn);
+router.get('/isLoggedIn', (req, res) => req.isAuthenticated() === true ? res.send(true) : res.send(false));
+
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.send();
+});
 
 module.exports = router;
