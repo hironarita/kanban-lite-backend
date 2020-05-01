@@ -4,8 +4,8 @@ const Sequelize = require('sequelize');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
+require('./utilities/passport');
 
 app.use(cors({
 	credentials: true,
@@ -26,9 +26,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
 exports.app = app;
 
+// initialize db
 const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW, {
 	host: 'localhost',
 	dialect: 'postgres',
@@ -37,52 +37,10 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 exports.sequelize = sequelize;
 
 // models
-const User = require('./models/User').User;
+const User = require('./models/user');
 User.sync();
 
-passport.serializeUser((user, done) => {
-	done(null, user.id);
-});
-passport.deserializeUser((id, done) => {
-	User.findOne({ where: { id } }).then(user => done(null, user));
-});
-
-app.post('/register', (req, res) => {
-	const username = req.body.username;
-	const password = req.body.password;
-	User.findOne({ where: { username } }).then(async user => {
-		if (user) return res.status(400).send();
-		const newUser = await User.create({ username, password });
-		req.login(newUser, () => res.status(200).send());
-	});
-});
-
-passport.use('login', new LocalStrategy((username, password, done) => {
-	User.findOne({ where: { username } }).then(user => {
-		if (!user) {
-			return done(null, false, { message: 'Incorrect username.' });
-		}
-		if (user.password !== password) {
-			return done(null, false, { message: 'Incorrect password.' });
-		}
-		return done(null, user);
-	})
-}));
-
-app.post('/login',
-	passport.authenticate('login'),
-	(req, res) => {
-		req.user ? res.status(200).send() : res.status(400).send()
-	}
-);
-
-const isLoggedIn = function (req, res) {
-	if (req.isAuthenticated()) {
-		return res.send(true);
-	}
-	res.send(false);
-};
-
-app.get('/isLoggedIn', isLoggedIn);
+// routes
+app.use('/account', require('./routes/account'));
 
 app.listen(process.env.SERVER_PORT);

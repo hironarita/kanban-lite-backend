@@ -17,4 +17,4 @@ User.init({
     modelName: 'user'
 });
 
-exports.User = User;
+module.exports = User;
