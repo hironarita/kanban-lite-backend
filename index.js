@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
-});  
+});
 
 app.use(session({
 	secret: "cats",
@@ -37,7 +37,7 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 exports.sequelize = sequelize;
 
 // models
-const User = require('./models/user');
+const User = require('./models/users');
 User.sync();
 
 // routes
