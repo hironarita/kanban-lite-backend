@@ -14,11 +14,16 @@ router.post('/register', (req, res) => {
 router.post('/login',
 	passport.authenticate('login'),
 	(req, res) => {
-		req.user ? res.status(200).send() : res.status(400).send()
+        req.user
+            ? res.status(200).send()
+            : res.status(400).send()
 	}
 );
 
-router.get('/isLoggedIn', (req, res) => req.isAuthenticated() === true ? res.send(true) : res.send(false));
+router.get('/isLoggedIn', (req, res) => req.isAuthenticated() === true
+    ? res.send(true)
+    : res.send(false)
+);
 
 router.get('/logout', (req, res) => {
     req.logout();
