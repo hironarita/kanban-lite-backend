@@ -37,7 +37,7 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 exports.sequelize = sequelize;
 
 // models
-const User = require('./models/users');
+const User = require('./models/user');
 User.sync();
 
 // routes
