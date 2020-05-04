@@ -38,6 +38,8 @@ exports.sequelize = sequelize;
 // models
 const User = require('./models/user');
 User.sync();
+const Column = require('./models/column');
+Column.sync();
 
 // must come after User model is initialized
 require('./utilities/passport');
