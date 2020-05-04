@@ -46,5 +46,6 @@ require('./utilities/passport');
 
 // routes
 app.use('/account', require('./routes/account'));
+app.use('/columns', require('./routes/column'));
 
 app.listen(process.env.SERVER_PORT);
