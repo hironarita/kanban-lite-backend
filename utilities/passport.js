@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 passport.serializeUser((user, done) => {
@@ -14,7 +15,7 @@ passport.use('login', new LocalStrategy((username, password, done) => {
 		if (!user) {
 			return done(null, false, { message: 'Incorrect username.' });
 		}
-		if (user.password !== password) {
+		if (bcrypt.compareSync(password, user.password) === false) {
 			return done(null, false, { message: 'Incorrect password.' });
 		}
 		return done(null, user);
