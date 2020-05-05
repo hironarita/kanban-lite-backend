@@ -17,4 +17,12 @@ router.post('/create', checkAuth, (req, res) => {
     }).then(() => res.send());
 });
 
+router.post('/update', checkAuth, (req, res) => {
+    Column.findOne({ where: { id: req.body.id } }).then(async column => {
+        column.title = req.body.title;
+        await column.save();
+        res.send();
+    });
+});
+
 module.exports = router;
