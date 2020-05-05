@@ -4,6 +4,16 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const Column = require('../models/column');
 
+router.get('/isLoggedIn', (req, res) => req.isAuthenticated() === true
+    ? res.send(true)
+    : res.send(false)
+);
+
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.send();
+});
+
 router.post('/register', (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
@@ -28,15 +38,5 @@ router.post('/login',
             : res.status(400).send()
 	}
 );
-
-router.get('/isLoggedIn', (req, res) => req.isAuthenticated() === true
-    ? res.send(true)
-    : res.send(false)
-);
-
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.send();
-});
 
 module.exports = router;
