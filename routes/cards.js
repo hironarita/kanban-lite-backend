@@ -15,4 +15,14 @@ router.get('/', checkAuth, (req, res) => {
     }).then(cards => res.send(cards));
 });
 
+router.post('/create', checkAuth, (req, res) => {
+    Card
+        .create({
+            title: req.body.title,
+            columnIndex: req.body.columnIndex,
+            column_id: req.body.columnId
+        })
+        .then(() => res.send());
+});
+
 module.exports = router;

@@ -36,12 +36,14 @@ const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW,
 exports.sequelize = sequelize;
 
 // models
-const User = require('./models/user');
-User.sync();
-const Column = require('./models/column');
-Column.sync();
-const Card = require('./models/card');
-Card.sync();
+(async () => {
+	const User = require('./models/user');
+	await User.sync();
+	const Column = require('./models/column');
+	await Column.sync();
+	const Card = require('./models/card');
+	await Card.sync();
+})();
 
 // must come after User model is initialized
 require('./utilities/passport');
