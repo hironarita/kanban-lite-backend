@@ -40,6 +40,8 @@ const User = require('./models/user');
 User.sync();
 const Column = require('./models/column');
 Column.sync();
+const Card = require('./models/card');
+Card.sync();
 
 // must come after User model is initialized
 require('./utilities/passport');
@@ -47,5 +49,6 @@ require('./utilities/passport');
 // routes
 app.use('/account', require('./routes/account'));
 app.use('/columns', require('./routes/columns'));
+app.use('/cards', require('./routes/cards'));
 
 app.listen(process.env.SERVER_PORT);
