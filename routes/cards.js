@@ -25,4 +25,26 @@ router.post('/create', checkAuth, (req, res) => {
         .then(() => res.send());
 });
 
+router.post('/move', checkAuth, (req, res) => {
+    const cardIds = req.body.cardData.map(x => x.id);
+    Card
+        .findAll({
+            where: {
+                id: { [Op.in]: cardIds }
+            } 
+        })
+        .then(cards => {
+            for (let i = 0; i < cards.length; i++) {
+                const card = req.body.cardData.find(x => x.id === cards[i].id);
+                if (card) {
+                    cards[i].column_id = card.column_id;
+                    cards[i].columnIndex = card.columnIndex;
+                    cards[i].save();
+                }
+            }
+
+            res.send();
+        });
+});
+
 module.exports = router;
