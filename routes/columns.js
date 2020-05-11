@@ -28,7 +28,7 @@ router.post('/update', checkAuth, async (req, res) => {
 });
 
 router.post('/move', checkAuth, async (req, res) => {
-    const columns = Column.findAll({ where: { user_id: req.user.dataValues.id } })
+    const columns = await Column.findAll({ where: { user_id: req.user.dataValues.id } })
     for (let i = 0; i < columns.length; i++) {
         columns[i].boardIndex = req.body[columns[i].id];
         await columns[i].save();
