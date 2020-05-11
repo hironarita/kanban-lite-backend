@@ -1,5 +1,6 @@
 var router = require('express').Router();
 const Column = require('../models/column');
+const Card = require('../models/card');
 
 const checkAuth = (req, res, next) => req.isAuthenticated() === true
     ? next()
@@ -34,14 +35,22 @@ router.post('/update', checkAuth, (req, res) => {
 router.post('/move', checkAuth, (req, res) => {
     Column
         .findAll({ where: { user_id: req.user.dataValues.id } })
-        .then(columns => {
+        .then(async columns => {
             for (let i = 0; i < columns.length; i++) {
                 columns[i].boardIndex = req.body[columns[i].id];
-                columns[i].save();
+                await columns[i].save();
             }
 
             res.send();
         });
+});
+
+router.post('/delete/:id', checkAuth, async (req, res) => {
+    await Card.destroy({ where: { column_id: req.params.id } })
+
+    Column
+        .destroy({ where: { id: req.params.id } })
+        .then(() => res.send());
 });
 
 module.exports = router;

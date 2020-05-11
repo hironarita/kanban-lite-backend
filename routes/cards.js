@@ -7,11 +7,13 @@ const checkAuth = (req, res, next) => req.isAuthenticated() === true
     : res.status(401).send();
 
 router.get('/', checkAuth, (req, res) => {
+    if (req.query.columnIds.length === 0) return res.send([]);
+
     const colIds = req.query.columnIds.split(',');
     Card.findAll({
         where: {
             column_id: { [Op.in]: colIds }
-        } 
+        }
     }).then(cards => res.send(cards));
 });
 
@@ -31,7 +33,7 @@ router.post('/move', checkAuth, (req, res) => {
         .findAll({
             where: {
                 id: { [Op.in]: cardIds }
-            } 
+            }
         })
         .then(cards => {
             for (let i = 0; i < cards.length; i++) {
