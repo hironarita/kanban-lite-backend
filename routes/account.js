@@ -14,7 +14,7 @@ router.get('/logout', (req, res) => {
 	res.send();
 });
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
 	const username = req.body.username;
 	const password = req.body.password;
 	const user = await User.findOne({ where: { username } })
