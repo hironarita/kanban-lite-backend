@@ -23,6 +23,7 @@ router.post('/create', checkAuth, async (req, res) => {
     await Card.create({
         title: req.body.title,
         columnIndex: req.body.columnIndex,
+        description: '',
         column_id: req.body.columnId
     })
     res.send();
