@@ -13,6 +13,10 @@ Card.init({
         type: Sequelize.INTEGER,
         allowNull: false
     },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
 
     // foreign key
     column_id: {

@@ -10,11 +10,7 @@ router.get('/', checkAuth, async (req, res) => {
     if (req.query.columnIds.length === 0) return res.send([]);
 
     const colIds = req.query.columnIds.split(',');
-    const cards = await Card.findAll({
-        where: {
-            column_id: { [Op.in]: colIds }
-        }
-    });
+    const cards = await Card.findAll({ where: { column_id: { [Op.in]: colIds } } });
     res.send(cards);
 });
 
@@ -32,13 +28,17 @@ router.post('/create', checkAuth, async (req, res) => {
     res.send();
 });
 
+router.post('/update/:id', checkAuth, async (req, res) => {
+    const card = await Card.findOne({ where: { id: req.params.id } });
+    card.title = req.body.title;
+    card.description = req.body.description;
+    await card.save();
+    res.send();
+});
+
 router.post('/move', checkAuth, async (req, res) => {
     const cardIds = req.body.cardData.map(x => x.id);
-    const cards = await Card.findAll({
-        where: {
-            id: { [Op.in]: cardIds }
-        }
-    });
+    const cards = await Card.findAll({ where: { id: { [Op.in]: cardIds } } });
     for (let i = 0; i < cards.length; i++) {
         const card = req.body.cardData.find(x => x.id === cards[i].id);
         if (card) {
