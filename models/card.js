@@ -6,7 +6,7 @@ const Model = Sequelize.Model;
 class Card extends Model { }
 Card.init({
     title: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
     },
     columnIndex: {
@@ -14,7 +14,7 @@ Card.init({
         allowNull: false
     },
     description: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
     },
 

@@ -6,7 +6,7 @@ const Model = Sequelize.Model;
 class Column extends Model { }
 Column.init({
     title: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
     },
     boardIndex: {
