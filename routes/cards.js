@@ -37,6 +37,12 @@ router.post('/update/:id', checkAuth, async (req, res) => {
     res.send();
 });
 
+router.post('/delete/:id', checkAuth, async (req, res) => {
+    const card = await Card.findOne({ where: { id: req.params.id } });
+    await card.destroy();
+    res.send();
+});
+
 router.post('/move', checkAuth, async (req, res) => {
     const cardIds = req.body.cardData.map(x => x.id);
     const cards = await Card.findAll({ where: { id: { [Op.in]: cardIds } } });
