@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use(session({
-	secret: 'cats',
+	secret: process.env.SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false
 }));
@@ -28,8 +28,8 @@ app.use(passport.session());
 exports.app = app;
 
 // initialize db
-const sequelize = new Sequelize('postgres', 'postgres', process.env.POSTGRES_PW, {
-	host: 'localhost',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PW, {
+	host: process.env.DB_HOST,
 	dialect: 'postgres',
 	port: process.env.POSTGRES_PORT
 });
