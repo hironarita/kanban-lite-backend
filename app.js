@@ -53,4 +53,4 @@ app.use('/account', require('./routes/account'));
 app.use('/columns', require('./routes/columns'));
 app.use('/cards', require('./routes/cards'));
 
-app.listen(process.env.SERVER_PORT);
+app.listen(process.env.PORT);
