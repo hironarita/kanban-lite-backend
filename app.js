@@ -17,12 +17,18 @@ app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
-
-app.use(session({
+let sess = {
 	secret: process.env.SESSION_SECRET,
 	resave: false,
-	saveUninitialized: false
-}));
+	saveUninitialized: false,
+	cookie: {}
+};
+if (process.env.ENVIRONMENT === 'production') {
+	app.set('trust proxy', 1);
+	sess.cookie.sameSite = 'none';
+	sess.cookie.secure = true;
+}
+app.use(session(sess));
 app.use(passport.initialize());
 app.use(passport.session());
 exports.app = app;
