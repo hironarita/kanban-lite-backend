@@ -32,12 +32,9 @@ router.post('/register', async (req, res) => {
 router.post('/login',
 	passport.authenticate('login'),
 	(req, res) => {
-		if (req.user) {
-			req.session.user = req.user;
-			req.session.token = req.user;
-			return res.status(200).send();
-		}
-		res.status(400).send();
+		req.user
+			? res.status(200).send()
+			: res.status(400).send()
 	}
 );
 
