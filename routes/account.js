@@ -32,6 +32,7 @@ router.post('/register', async (req, res) => {
 router.post('/login',
 	passport.authenticate('login'),
 	(req, res) => {
+		res.cookie('foo', 'bar', { sameSite: 'none', secure: true });
 		req.user
 			? res.status(200).send()
 			: res.status(400).send()
