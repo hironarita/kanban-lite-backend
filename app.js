@@ -24,6 +24,7 @@ let sess = {
 	cookie: {}
 };
 if (process.env.ENVIRONMENT === 'production') {
+	app.set('trust proxy', 1);
 	sess.cookie.sameSite = 'none';
 	sess.cookie.secure = true;
 }
