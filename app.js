@@ -34,7 +34,16 @@ app.use(passport.session());
 exports.app = app;
 
 // initialize db
-const sequelize = new Sequelize(process.env.DATABASE_URL);
+let sequelize;
+if (process.env.ENVIRONMENT === 'production') {
+	sequelize = new Sequelize(process.env.DATABASE_URL);
+} else {
+	sequelize = new Sequelize(process.env.DB_NAME, process.env.POSTGRES_USERNAME, process.env.POSTGRES_PW, {
+		host: process.env.DB_HOST,
+		dialect: 'postgres',
+		port: process.env.POSTGRES_PORT
+	});
+}
 exports.sequelize = sequelize;
 
 // models
